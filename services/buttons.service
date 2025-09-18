@@ -1,0 +1,10 @@
+[Unit]
+Description=Screen Button
+After=mpv-player.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/tommaso/simpsonstv/buttons.py
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

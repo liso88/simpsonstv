@@ -1,35 +1,48 @@
-import RPi.GPIO as GPIO
-import time
+from gpiozero import Device, Button, LED
+from gpiozero.pins.rpigpio import RPiGPIOFactory
+Device.pin_factory = RPiGPIOFactory()  # <— key line
+
 import os
-
-os.system('raspi-gpio set 19 ip')
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(18, GPIO.OUT)
+from signal import pause
+import time
 
 
-def turnOnScreen():
-    os.system('raspi-gpio set 19 op a5')
-    GPIO.output(18, GPIO.HIGH)
+BUTTON_PIN = 26
+
+print("Lo script è stato caricato")
+
+button = Button(BUTTON_PIN, pull_up=True)
+os.system('raspi-gpio set 18 op')
 
 
-def turnOffScreen():
-    os.system('raspi-gpio set 19 ip')
-    GPIO.output(18, GPIO.LOW)
 
 
-turnOffScreen()
-screen_on = False
+def turn_on_screen():
+    os.system('raspi-gpio set 18 dh')
+    os.system('raspi-gpio set 19 a5')
+    print("Ho premuto il pulsante")
+    time.sleep(0.3)
 
+def turn_off_screen():
+    os.system('raspi-gpio set 18 dl')
+    os.system('raspi-gpio set 19 op')
+    os.system('raspi-gpio set 19 dl')   
+    print("Ho premuto il pulsante")
+    time.sleep(0.3)
+
+
+turn_on_screen()
+
+screen_on = True
 while (True):
     # If you are having and issue with the button doing the opposite of what you want
     # IE Turns on when it should be off, change this line to:
     # input = not GPIO.input(26)
-    input = GPIO.input(26)
+    input = not button.is_pressed
     if input != screen_on:
         screen_on = input
         if screen_on:
-            turnOnScreen()
+            turn_on_screen()
         else:
-            turnOffScreen()
+            turn_off_screen()
     time.sleep(0.3)

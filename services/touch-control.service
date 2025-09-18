@@ -1,0 +1,12 @@
+[Unit]
+Description=Touchscreen controller for MPV
+After=mpv-player.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/tommaso/simpsonstv/touch_patched.py
+Restart=on-failure
+# Replace event5 with your touchscreen device (check with `sudo evtest`)
+
+
+[Install]
+WantedBy=default.target
